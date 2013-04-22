@@ -4,6 +4,7 @@ open import Data.Nat hiding (_≟_)
 open import Data.Fin
 open import Data.Vec
 open import Data.String
+open import Relation.Nullary.Decidable
 
 Name : Set
 Name = String
@@ -25,7 +26,7 @@ Binder = Vec Name
 
 data _⊢_↝_ : ∀ {n} → Binder n → RawExpr → Expr n → Set where
   var-zero : ∀ {n x} → {Γ : Binder n} → (x ∷ Γ) ⊢ var x ↝ var zero
-  var-suc : ∀ {n x y k} → {Γ : Binder n} → Γ ⊢ var x ↝ var k → (y ∷ Γ) ⊢ var x ↝ var (suc k)
+  var-suc : ∀ {n x y k} → {Γ : Binder n} → {p : False (x ≟ y)} → Γ ⊢ var x ↝ var k → (y ∷ Γ) ⊢ var x ↝ var (suc k)
   lam : ∀ {n x E E′} → {Γ : Binder n} → (x ∷ Γ) ⊢ E ↝ E′ → Γ ⊢ lam x E ↝ lam E′
   _·_ : ∀ {n E E′ F F′} → {Γ : Binder n} → Γ ⊢ E ↝ E′ → Γ ⊢ F ↝ F′ → Γ ⊢ E · F ↝ E′ · F′
 
@@ -54,7 +55,7 @@ find-name [] x = no lem
 find-name (y ∷ Γ) x with x ≟ y
 find-name (y ∷ Γ) .y | yes refl = yes (var zero , var-zero)
 find-name (y ∷ Γ) x | no x≢y with find-name Γ x
-find-name (y ∷ Γ) x | no x≢y | yes (var k , Σ) = yes (var (suc k) , var-suc Σ)
+find-name (y ∷ Γ) x | no x≢y | yes (var k , Σ) = yes (var (suc k) , var-suc {p = fromWitnessFalse x≢y} Σ)
 find-name (y ∷ Γ) x | no x≢y | yes (lam _ , ())
 find-name (y ∷ Γ) x | no x≢y | yes (_ · _ , ())
 find-name (y ∷ Γ) x | no x≢y | no ¬p = no lem
@@ -89,8 +90,6 @@ check Γ (E · F) | no ¬p = no lem
   lem (var _ , ())
   lem (lam _ , ())
   lem (E₁ · E₂ , Σ) = ¬p (E₁ , appˡ Σ)
-
-open import Relation.Nullary.Decidable
 
 scope : (E : RawExpr) → {p : True (check [] E)} → Expr 0
 scope E {p} = proj₁ (toWitness p)
