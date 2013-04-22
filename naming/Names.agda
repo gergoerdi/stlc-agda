@@ -1,11 +1,12 @@
 module Names where
 
-open import Data.Nat
+open import Data.Nat hiding (_≟_)
 open import Data.Fin
 open import Data.Vec
+open import Data.String
 
 Name : Set
-Name = ℕ
+Name = String
 
 data RawExpr : Set where
   var : Name → RawExpr
@@ -99,9 +100,7 @@ module Example where
   open import Function using (_$_)
 
   ID : Expr 0
-  ID = scope $ lam 0 (var 0)
+  ID = scope $ lam "x" (var "x")
 
   CONST : Expr 0
-  CONST = scope $ lam 0 (lam 42 (var 0))
-
-  -- CONST = scope $ lam "x" (lam "y" (var "x"))
+  CONST = scope $ lam "x" (lam "y" (var "x"))
