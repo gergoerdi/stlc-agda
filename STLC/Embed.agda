@@ -1,7 +1,4 @@
-open import Relation.Binary
-open import Relation.Binary.PropositionalEquality
-
-module STLC.Embed {U : Set} (UEq : IsDecEquivalence {A = U} _≡_) (Prim : U → Set) where
+module STLC.Embed {U : Set} (Prim : U → Set) where
 
 open import STLC.Typing U
 open import STLC.Bound Type
