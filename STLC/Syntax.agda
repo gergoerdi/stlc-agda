@@ -10,7 +10,7 @@ Name : Set
 Name = String
 
 data Formal : Set where
-  _∷_ : Name → Type → Formal
+  _∶_ : Name → Type → Formal
 
 data Expr : Set where
   var : Name → Expr

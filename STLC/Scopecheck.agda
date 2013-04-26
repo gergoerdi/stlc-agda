@@ -4,7 +4,7 @@ open import STLC.Syntax Type as S hiding (Expr; module Expr)
 open import STLC.Bound Type
 open import Data.Nat hiding (_≟_)
 open import Data.Fin
-open import Data.Vec
+open import Data.Vec using ([]; _∷_; lookup; reverse)
 open import Data.String
 open import Relation.Nullary.Decidable
 
@@ -47,11 +47,11 @@ find-name (y ∷ Γ) x | no x≢y | no ¬p = no lem
 
 check : ∀ {n} → (Γ : Binder n) → (E : S.Expr) → Dec (∃ λ E′ → Γ ⊢ E ↝ E′)
 check Γ (var x) = find-name Γ x
-check Γ (lam (x ∷ τ) E) with check (x ∷ Γ) E
-check Γ (lam (x ∷ τ) E) | yes (E′ , δ) = yes (lam _ E′ , lam δ)
-check Γ (lam (x ∷ τ) E) | no ¬p = no lem
+check Γ (lam (x ∶ τ) E) with check (x ∷ Γ) E
+check Γ (lam (x ∶ τ) E) | yes (E′ , δ) = yes (lam _ E′ , lam δ)
+check Γ (lam (x ∶ τ) E) | no ¬p = no lem
   where
-  lem : ∄[ E′ ] Γ ⊢ lam (x ∷ τ) E ↝ E′
+  lem : ∄[ E′ ] Γ ⊢ lam (x ∶ τ) E ↝ E′
   lem (var _ , ())
   lem (_ · _ , ())
   lem (lam .τ E′ , lam δ) = ¬p (E′ , δ)
@@ -71,5 +71,6 @@ check Γ (E · F) | no ¬p = no lem
   lem (lam _ _ , ())
   lem (E₁ · E₂ , δ) = ¬p (E₁ , appˡ δ)
 
+-- Go from a representation that uses Names to one that uses de Bruijn indices
 scope : (E : S.Expr) → {p : True (check [] E)} → Expr 0
 scope E {p} = proj₁ (toWitness p)

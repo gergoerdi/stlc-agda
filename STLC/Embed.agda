@@ -21,7 +21,7 @@ embed-hom () []
 embed-hom zero (y ∷ Γ) = refl
 embed-hom (suc x) (y ∷ Γ) = embed-hom x Γ
 
-embed : ∀ {n} {E : Expr n} {Γ : Ctxt n} {τ : Type} → Γ ⊢ E ∷ τ → E.Expr (embed-ctxt Γ) (embed-type τ)
+embed : ∀ {n} {E : Expr n} {Γ : Ctxt n} {τ : Type} → Γ ⊢ E ∶ τ → E.Expr (embed-ctxt Γ) (embed-type τ)
 embed {E = var x} {Γ} tVar = subst (E.Expr _) (embed-hom x Γ) (var x)
-embed {E = lam τ _} (tLam t) = lam (embed-type τ) (embed t)
+embed {E = lam τ _} (tLam t) = lam {A = embed-type τ} (embed t)
 embed (t₁ · t₂) = embed t₁ · embed t₂
