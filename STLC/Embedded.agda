@@ -15,11 +15,11 @@ data Expr {n : ℕ} : Ctxt n → Set → Set₁ where
 open import Data.Unit
 open import Data.Product
 
-ctxt : ∀ {n} → Ctxt n → Set
-ctxt [] = ⊤
-ctxt (A ∷ Γ) = A × ctxt Γ
+Env : ∀ {n} → Ctxt n → Set
+Env [] = ⊤
+Env (A ∷ Γ) = A × Env Γ
 
-eval : ∀ {n} {Γ : Ctxt n} (γ : ctxt Γ) {A : Set} → Expr Γ A → A
+eval : ∀ {n} {Γ : Ctxt n} (γ : Env Γ) {A : Set} → Expr Γ A → A
 eval {Γ = []} γ (var ())
 eval {Γ = τ ∷ Γ} (x , γ) (var zero) = x
 eval {Γ = τ ∷ Γ} (x , γ) (var (suc k)) = eval γ (var k)
