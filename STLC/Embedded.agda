@@ -12,25 +12,22 @@ data Expr {n : ℕ} : Ctxt n → Set → Set₁ where
   lam : {A : Set} → ∀ {Γ B} → (E : Expr (A ∷ Γ) B) → Expr Γ (A → B)
   _·_ : ∀ {Γ A B} → (F : Expr Γ (A → B)) → (E : Expr Γ A) → Expr Γ B
 
-open import Data.Unit
-open import Data.Product
-
-Env : ∀ {n} → Ctxt n → Set
-Env [] = ⊤
-Env (A ∷ Γ) = A × Env Γ
+data Env : {n : ℕ} → Ctxt n → Set₁ where
+  [] : Env []
+  _∷_ : ∀ {n A} {Γ : Ctxt n} → (x : A) → (γ : Env Γ) → Env (A ∷ Γ)
 
 eval : ∀ {n} {Γ : Ctxt n} (γ : Env Γ) {A : Set} → Expr Γ A → A
 eval {Γ = []} γ (var ())
-eval {Γ = τ ∷ Γ} (x , γ) (var zero) = x
-eval {Γ = τ ∷ Γ} (x , γ) (var (suc k)) = eval γ (var k)
-eval γ (lam E) = λ x → eval (x , γ) E
+eval {Γ = τ ∷ Γ} (x ∷ γ) (var zero) = x
+eval {Γ = τ ∷ Γ} (x ∷ γ) (var (suc k)) = eval γ (var k)
+eval γ (lam E) = λ x → eval (x ∷ γ) E
 eval γ (E · F) = (eval γ E) (eval γ F)
 
 eval₀ : ∀ {A : Set} → Expr [] A → A
-eval₀ = eval tt
+eval₀ = eval []
 
 private
   open import Function using (_$_)
 
-  ex₁ : ℕ → ⊤ → ℕ
+  ex₁ : ℕ → Fin 42 → ℕ
   ex₁ = eval₀ $ lam $ lam $ var (suc zero)
