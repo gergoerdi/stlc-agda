@@ -17,11 +17,11 @@ data Env : {n : ℕ} → Ctxt n → Set₁ where
   _∷_ : ∀ {n A} {Γ : Ctxt n} → (x : A) → (γ : Env Γ) → Env (A ∷ Γ)
 
 eval : ∀ {n} {Γ : Ctxt n} (γ : Env Γ) {A : Set} → Expr Γ A → A
-eval [] (var ())
-eval (x ∷ γ) (var zero) = x
+eval []      (var ())
+eval (x ∷ γ) (var zero)    = x
 eval (x ∷ γ) (var (suc k)) = eval γ (var k)
-eval γ (lam E) = λ x → eval (x ∷ γ) E
-eval γ (E · F) = (eval γ E) (eval γ F)
+eval γ       (lam E)       = λ x → eval (x ∷ γ) E
+eval γ       (E · F)       = (eval γ E) (eval γ F)
 
 eval₀ : ∀ {A : Set} → Expr [] A → A
 eval₀ = eval []
