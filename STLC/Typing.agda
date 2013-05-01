@@ -23,5 +23,6 @@ data _⊢_∶_ : ∀ {n} → Ctxt n → Expr n → Type → Set where
          Γ ⊢ lam τ E ∶ τ ↣ τ′
 
   _·_ :  ∀ {n} {Γ : Ctxt n} {E τ τ′} {F} →
-         Γ ⊢ E ∶ τ ↣ τ′ → Γ ⊢ F ∶ τ →
+         Γ ⊢ E ∶ τ ↣ τ′ →
+         Γ ⊢ F ∶ τ →
          Γ ⊢ E · F ∶ τ′

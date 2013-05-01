@@ -45,7 +45,7 @@ find-name (y ∷ Γ) x | no x≢y | no ¬p = no lem
   lem (E′ , δ) | inj₁ x≡y = x≢y x≡y
   lem (E′ , δ) | inj₂ p = ¬p p
 
-check : ∀ {n} → (Γ : Binder n) → (E : S.Expr) → Dec (∃ λ E′ → Γ ⊢ E ↝ E′)
+check : ∀ {n} → (Γ : Binder n) → (E : S.Expr) → Dec (∃[ E′ ] Γ ⊢ E ↝ E′)
 check Γ (var x) = find-name Γ x
 check Γ (lam (x ∶ τ) E) with check (x ∷ Γ) E
 check Γ (lam (x ∶ τ) E) | yes (E′ , δ) = yes (lam _ E′ , lam δ)

@@ -51,7 +51,7 @@ lam-injˡ : ∀ {n τ₁ τ₂ τ} {Γ : Ctxt n} {E : Expr (suc n)} →
 lam-injˡ (tLam t) = refl
 
 mutual
-  infer : ∀ {n} Γ → (E : Expr n) → Dec (∃[ τ ] Γ ⊢ E ∶ τ)
+  infer : ∀ {n} Γ (E : Expr n) → Dec (∃[ τ ] Γ ⊢ E ∶ τ)
   infer Γ (var x) = yes (lookup x Γ , tVar)
   infer Γ (lam τ E) with infer (τ ∷ Γ) E
   infer Γ (lam τ E) | yes (τ′ , E∷τ′) = yes (τ ↣ τ′ , tLam E∷τ′)
@@ -78,7 +78,7 @@ mutual
     lem : ∄[ τ ] Γ ⊢ E · F ∶ τ
     lem (_ , t · _) = ¬p (_ , t)
 
-  check : ∀ {n} Γ → (E : Expr n) → ∀ τ → Dec (Γ ⊢ E ∶ τ)
+  check : ∀ {n} Γ (E : Expr n) → ∀ τ → Dec (Γ ⊢ E ∶ τ)
   check Γ (var x) τ with lookup x Γ T≟ τ
   check Γ (var x) .(lookup x Γ) | yes refl = yes tVar
   check Γ (var x) τ | no ¬p = no (¬p ∘ ⊢-inj tVar)
